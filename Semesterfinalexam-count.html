@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Semester Final Countdown</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg,#0f172a,#0b84a5);
+      color: white;
+    }
+    .card {
+      background: rgba(255,255,255,0.06);
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+      text-align: center;
+      width: 340px;
+    }
+    h1 { margin: 0 0 10px; font-size: 20px; }
+    .when { font-size: 14px; margin-bottom: 16px; opacity: 0.9; }
+    .count {
+      display:flex;
+      gap:8px;
+      justify-content: center;
+    }
+    .segment {
+      background: rgba(255,255,255,0.08);
+      padding: 12px 10px;
+      border-radius: 8px;
+      min-width: 64px;
+    }
+    .number { font-size: 26px; font-weight: 700; }
+    .label { font-size: 12px; opacity: 0.9; margin-top: 6px; }
+    .link-row { margin-top: 14px; font-size: 13px; }
+    a.btn {
+      display:inline-block;
+      text-decoration:none;
+      background: rgba(255,255,255,0.12);
+      padding:8px 10px;
+      border-radius:8px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Semester Final Countdown</h1>
+    <div class="when">Exam date: <strong id="examDateText">4 Jan 2026, 10:00 AM (Dhaka)</strong></div>
+
+    <div class="count" aria-live="polite">
+      <div class="segment">
+        <div class="number" id="days">0</div>
+        <div class="label">Days</div>
+      </div>
+      <div class="segment">
+        <div class="number" id="hours">0</div>
+        <div class="label">Hours</div>
+      </div>
+      <div class="segment">
+        <div class="number" id="minutes">0</div>
+        <div class="label">Minutes</div>
+      </div>
+      <div class="segment">
+        <div class="number" id="seconds">0</div>
+        <div class="label">Seconds</div>
+      </div>
+    </div>
+
+    <div class="link-row">
+      <!-- Example: How to save a link in HTML -->
+      <div>Website link example:</div>
+      <div style="margin-top:6px;">
+        <a class="btn" href="https://example.com" target="_blank" rel="noopener">Open example.com</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ======= CONFIGURE TARGET DATE HERE =======
+    // Using new Date(year, monthIndex, day, hour, minute, second)
+    // monthIndex is 0-based: January = 0, February = 1, March = 2, April = 3, ...
+    // Current setting: 4 January 2026, 10:00 AM local time (Dhaka if user's computer set to Dhaka)
+    const examDate = new Date(2026, 0, 4, 10, 0, 0); // <-- change monthIndex if needed
+    // If you meant 1 April 2026 at 10:00 AM use: new Date(2026, 3, 1, 10, 0, 0);
+
+    // Display nice text of exam date
+    const examDateText = document.getElementById('examDateText');
+    examDateText.textContent = examDate.toLocaleString(undefined, {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+
+    // elements
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minsEl = document.getElementById('minutes');
+    const secsEl = document.getElementById('seconds');
+
+    function updateCountdown() {
+      const now = new Date();
+      let diff = examDate - now; // milliseconds
+
+      if (diff <= 0) {
+        // Exam started or passed
+        daysEl.textContent = '0';
+        hoursEl.textContent = '0';
+        minsEl.textContent = '0';
+        secsEl.textContent = '0';
+        // Optionally show message
+        document.querySelector('.when').textContent = 'পরীক্ষা শুরু/অতিবাহিত হয়েছে!';
+        clearInterval(timerId);
+        return;
+      }
+
+      // Calculate time parts
+      const sec = 1000;
+      const min = sec * 60;
+      const hour = min * 60;
+      const day = hour * 24;
+
+      const d = Math.floor(diff / day);
+      diff %= day;
+      const h = Math.floor(diff / hour);
+      diff %= hour;
+      const m = Math.floor(diff / min);
+      diff %= min;
+      const s = Math.floor(diff / sec);
+
+      daysEl.textContent = d;
+      hoursEl.textContent = h.toString().padStart(2, '0');
+      minsEl.textContent = m.toString().padStart(2, '0');
+      secsEl.textContent = s.toString().padStart(2, '0');
+    }
+
+    // Start
+    updateCountdown();
+    const timerId = setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
